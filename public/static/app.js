@@ -1,5 +1,5 @@
 // ============================================================================
-// AgriSense AI — Frontend interactivity (vanilla JS, no build step needed)
+// CropRakshak — Frontend interactivity (vanilla JS, no build step needed)
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {

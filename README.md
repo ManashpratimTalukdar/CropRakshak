@@ -1,4 +1,4 @@
-# AgriSense AI — Crop Health Early Detection & Management System
+# CropRakshak — Crop Health Early Detection & Management System
 
 **Tagline:** Detect Early • Diagnose Right • Advise Smart • Act in Time • Protect Yield
 

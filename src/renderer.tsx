@@ -9,7 +9,7 @@ export const renderer = jsxRenderer(({ children }, c) => {
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>AgriSense AI — Crop Health Early Detection &amp; Management</title>
+        <title>CropRakshak — Crop Health Early Detection &amp; Management</title>
         <meta
           name="description"
           content="AI-powered crop health early detection and management system for Indian smallholder farmers. Separates disease vs pest detection, catches early-stage issues, and gives honest confidence scores."
@@ -59,7 +59,7 @@ export const renderer = jsxRenderer(({ children }, c) => {
             <div class="flex items-center justify-between h-16">
               <a href="/" class="flex items-center gap-2 shrink-0">
                 <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-agri-500 to-tech-500 flex items-center justify-center text-white text-lg shadow-soft">🌿</span>
-                <span class="font-extrabold text-lg text-gray-900 leading-tight">AgriSense <span class="text-agri-600">AI</span></span>
+                <span class="font-extrabold text-lg text-gray-900 leading-tight">Crop<span class="text-agri-600">Rakshak</span></span>
               </a>
 
               <nav class="hidden lg:flex items-center gap-1 text-sm font-medium">
@@ -113,7 +113,7 @@ export const renderer = jsxRenderer(({ children }, c) => {
             <div class="col-span-1 sm:col-span-2 lg:col-span-1">
               <div class="flex items-center gap-2 mb-3">
                 <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-agri-500 to-tech-500 flex items-center justify-center text-white text-sm">🌿</span>
-                <span class="font-bold text-white">AgriSense AI</span>
+                <span class="font-bold text-white">CropRakshak</span>
               </div>
               <p class="text-sm text-gray-400 leading-relaxed">Detect Early • Diagnose Right • Advise Smart • Act in Time • Protect Yield.</p>
               <p class="text-xs text-gray-500 mt-3">A Smart India Hackathon prototype for smallholder &amp; marginal farmers.</p>
@@ -147,7 +147,7 @@ export const renderer = jsxRenderer(({ children }, c) => {
             </div>
           </div>
           <div class="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-            © 2026 AgriSense AI — Hackathon prototype. All crop/pest data shown is simulated for demonstration.
+            © 2026 CropRakshak — Hackathon prototype. All crop/pest data shown is simulated for demonstration.
           </div>
         </footer>
 
