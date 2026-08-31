@@ -1,4 +1,5 @@
 export const AnalysisPage = ({ caseId }: { caseId: string }) => {
+  const isLiveScan = caseId.startsWith('live-')
   return (
     <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div class="text-center mb-8">
@@ -75,7 +76,11 @@ export const AnalysisPage = ({ caseId }: { caseId: string }) => {
         ))}
       </div>
 
-      <p class="text-center text-xs text-gray-400 mt-6">Demo mode — showing a simulated result for illustration. No live model call is made.</p>
+      <p class="text-center text-xs text-gray-400 mt-6">
+        {isLiveScan
+          ? 'This result came from a live Cloudflare Workers AI vision model call on your photo — weather & regional context shown alongside it are still simulated for this demo.'
+          : 'Demo mode — showing a pre-seeded illustrative result. Upload your own photo on /scan to run the real AI model.'}
+      </p>
 
       <div class="text-center mt-8" id="analysis-cta" style="display:none">
         <a href={`/diagnosis/${caseId}`} class="btn-primary inline-flex items-center gap-2"><i class="fa-solid fa-file-medical"></i> View Diagnosis</a>

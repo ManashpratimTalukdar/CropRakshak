@@ -5,7 +5,13 @@
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  // Cloudflare Workers AI binding — powers real image-classification
+  // inference for the /scan flow (see src/lib/ai.ts). Available
+  // automatically once deployed to Cloudflare; requires no extra secrets.
+  "ai": {
+    "binding": "AI"
+  }
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
@@ -27,8 +33,5 @@
   //     "database_name": "my-database",
   //     "database_id": ""
   //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // }
+  // ]
 }
