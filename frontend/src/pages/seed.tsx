@@ -17,7 +17,7 @@ export const SeedPage = ({ batchCode }: { batchCode?: string }) => {
         <div class="flex items-center gap-2 text-xs font-bold text-eco-600 uppercase tracking-wide">
           <i class="fa-solid fa-seedling"></i> Seed Verification &amp; Quality Assurance
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">Check your seed before you sow</h1>
+        <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1">Check your seed before you sow</h1>
         <p class="text-gray-500 mt-1 text-sm">Enter a batch code from your seed bag tag, or try one of the sample batches below.</p>
       </div>
 
@@ -73,7 +73,7 @@ export const SeedPage = ({ batchCode }: { batchCode?: string }) => {
 
           {/* Quality assessment */}
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-vial-circle-check text-agri-600"></i> Quality assessment</h2>
+            <h2 class="font-display font-bold text-agri-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-vial-circle-check text-agri-600"></i> Quality assessment</h2>
             <div class="grid sm:grid-cols-2 gap-4">
               {[
                 { label: 'Germination rate', val: batch.germinationPct, unit: '%', good: 85 },
@@ -104,7 +104,7 @@ export const SeedPage = ({ batchCode }: { batchCode?: string }) => {
           {/* Traceability timeline */}
           <div class="card p-5 sm:p-6">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-timeline text-eco-600"></i> Traceability &amp; records</h2>
+              <h2 class="font-display font-bold text-agri-900 flex items-center gap-2"><i class="fa-solid fa-timeline text-eco-600"></i> Traceability &amp; records</h2>
               <span class="text-xs font-mono bg-gray-100 px-2.5 py-1 rounded-lg">{batch.batchCode}</span>
             </div>
             <div class="relative pl-6 space-y-5 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
@@ -139,7 +139,7 @@ export const SeedPage = ({ batchCode }: { batchCode?: string }) => {
             { icon: 'fa-award', title: 'Authenticity score', desc: 'Clear Trusted / Caution / Not Trusted badge — no jargon.' },
           ].map((s) => (
             <div class="card p-5 text-center">
-              <div class="w-11 h-11 rounded-xl bg-eco-100 text-eco-600 flex items-center justify-center text-lg mx-auto mb-3"><i class={`fa-solid ${s.icon}`}></i></div>
+              <div class="w-11 h-11 rounded-md bg-eco-100 text-eco-600 flex items-center justify-center text-lg mx-auto mb-3"><i class={`fa-solid ${s.icon}`}></i></div>
               <p class="font-bold text-sm text-gray-900">{s.title}</p>
               <p class="text-xs text-gray-500 mt-1">{s.desc}</p>
             </div>

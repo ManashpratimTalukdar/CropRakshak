@@ -6,7 +6,7 @@ export const ScanPage = () => {
         <div class="flex items-center gap-2 text-xs font-bold text-agri-600 uppercase tracking-wide">
           <i class="fa-solid fa-camera"></i> Crop Scan
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">Let's check your crop</h1>
+        <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1">Let's check your crop</h1>
         <p class="text-gray-500 mt-1 text-sm sm:text-base">Answer what you can — everything except the photo is optional. A fast scan takes under a minute.</p>
       </div>
 
@@ -27,10 +27,10 @@ export const ScanPage = () => {
         {/* ============ STEP 1: PHOTO ============ */}
         <section class="step-panel active" data-step="0">
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-camera text-agri-600"></i> Crop image</h2>
+            <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-camera text-agri-600"></i> Crop image</h2>
             <p class="text-sm text-gray-500 mt-1 mb-4">Make sure the affected area is clearly visible — get close, use daylight, and include the underside of the leaf if possible.</p>
 
-            <label for="photo-input" class="block relative rounded-2xl border-2 border-dashed border-agri-300 bg-agri-50 hover:bg-agri-100 transition cursor-pointer overflow-hidden" style="min-height: 220px;">
+            <label for="photo-input" class="block relative rounded-md border-2 border-dashed border-agri-300 bg-agri-50 hover:bg-agri-100 transition cursor-pointer overflow-hidden" style="min-height: 220px;">
               <div id="photo-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-agri-600 gap-2">
                 <i class="fa-solid fa-camera text-3xl"></i>
                 <p class="font-semibold text-sm">Tap to take a photo or upload</p>
@@ -44,7 +44,7 @@ export const ScanPage = () => {
               <button type="button" id="use-sample-photo" class="btn-ghost text-xs bg-gray-100"><i class="fa-solid fa-image mr-1.5"></i>Use a sample photo instead</button>
             </div>
 
-            <div class="mt-4 bg-tech-50 border border-tech-100 rounded-xl p-3 flex gap-2.5 text-xs text-tech-800">
+            <div class="mt-4 bg-tech-50 border border-tech-100 rounded-md p-3 flex gap-2.5 text-xs text-tech-800">
               <i class="fa-solid fa-circle-info mt-0.5"></i>
               <p>Tip: photograph 2–3 leaves showing different stages of the symptom, plus one wider shot of the plant for context.</p>
             </div>
@@ -54,7 +54,7 @@ export const ScanPage = () => {
         {/* ============ STEP 2: CROP & FIELD INFO ============ */}
         <section class="step-panel" data-step="1">
           <div class="card p-5 sm:p-6 space-y-5">
-            <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-wheat-awn text-agri-600"></i> Crop &amp; field information</h2>
+            <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-wheat-awn text-agri-600"></i> Crop &amp; field information</h2>
 
             <div>
               <label class="field-label">Which crop?</label>
@@ -98,7 +98,7 @@ export const ScanPage = () => {
                 </div>
               </div>
             </div>
-            <button type="button" class="w-full border-2 border-dashed border-gray-200 rounded-xl py-3 text-sm text-gray-500 font-medium hover:border-tech-300 hover:text-tech-600 transition">
+            <button type="button" class="w-full border-2 border-dashed border-gray-200 rounded-md py-3 text-sm text-gray-500 font-medium hover:border-tech-300 hover:text-tech-600 transition">
               <i class="fa-solid fa-map-location-dot mr-1.5"></i> Or pick location on map
             </button>
           </div>
@@ -108,7 +108,7 @@ export const ScanPage = () => {
         <section class="step-panel" data-step="2">
           <div class="card p-5 sm:p-6 space-y-5">
             <div class="flex items-center justify-between">
-              <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-mound text-agri-600"></i> Soil information</h2>
+              <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-mound text-agri-600"></i> Soil information</h2>
               <span class="status-chip bg-gray-100 text-gray-500">Optional</span>
             </div>
             <p class="text-sm text-gray-500">Skip this if you don't have soil test data — we'll still analyze your photo.</p>
@@ -151,7 +151,7 @@ export const ScanPage = () => {
         <section class="step-panel" data-step="3">
           <div class="card p-5 sm:p-6 space-y-5">
             <div class="flex items-center justify-between">
-              <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-droplet text-tech-600"></i> Irrigation &amp; water</h2>
+              <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-droplet text-tech-600"></i> Irrigation &amp; water</h2>
               <span class="status-chip bg-gray-100 text-gray-500">Optional</span>
             </div>
 
@@ -193,7 +193,7 @@ export const ScanPage = () => {
         <section class="step-panel" data-step="4">
           <div class="card p-5 sm:p-6 space-y-5">
             <div class="flex items-center justify-between">
-              <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Treatment &amp; history</h2>
+              <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Treatment &amp; history</h2>
               <span class="status-chip bg-gray-100 text-gray-500">Optional</span>
             </div>
 
@@ -224,11 +224,11 @@ export const ScanPage = () => {
         <section class="step-panel" data-step="5">
           <div class="space-y-4">
             <div class="card p-5 sm:p-6">
-              <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-clipboard-check text-agri-600"></i> Review &amp; auto-pulled context</h2>
+              <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-clipboard-check text-agri-600"></i> Review &amp; auto-pulled context</h2>
               <p class="text-sm text-gray-500 mt-1">We've automatically pulled this in — no input needed from you.</p>
 
               <div class="grid sm:grid-cols-2 gap-4 mt-4">
-                <div class="rounded-xl bg-tech-50 border border-tech-100 p-4">
+                <div class="rounded-md bg-tech-50 border border-tech-100 p-4">
                   <p class="text-xs font-bold text-tech-700 uppercase mb-2 flex items-center gap-1.5"><i class="fa-solid fa-cloud-sun"></i> Weather &amp; environment</p>
                   <ul class="text-sm text-gray-700 space-y-1.5">
                     <li class="flex justify-between"><span class="text-gray-500">Temperature</span><span class="font-semibold">24°C (18–27°C)</span></li>
@@ -238,7 +238,7 @@ export const ScanPage = () => {
                     <li class="flex justify-between"><span class="text-gray-500">Forecast</span><span class="font-semibold">Light showers in 2 days</span></li>
                   </ul>
                 </div>
-                <div class="rounded-xl bg-eco-50 border border-eco-100 p-4">
+                <div class="rounded-md bg-eco-50 border border-eco-100 p-4">
                   <p class="text-xs font-bold text-eco-700 uppercase mb-2 flex items-center gap-1.5"><i class="fa-solid fa-map-location-dot"></i> Regional data</p>
                   <ul class="text-sm text-gray-700 space-y-1.5">
                     <li class="flex justify-between"><span class="text-gray-500">Nearby reports (8 km)</span><span class="font-semibold">14 cases</span></li>

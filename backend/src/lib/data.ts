@@ -652,7 +652,7 @@ export function statusColor(status: string) {
       return { bg: 'bg-agri-100', text: 'text-agri-700' }
     case 'Pending Review':
     case 'New':
-      return { bg: 'bg-blue-100', text: 'text-blue-700' }
+      return { bg: 'bg-tech-100', text: 'text-tech-700' }
     case 'Escalated':
       return { bg: 'bg-red-100', text: 'text-red-700' }
     case 'Contacted':

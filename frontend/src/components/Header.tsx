@@ -7,12 +7,12 @@ export const Header = ({ path }: { path: string }) => {
   const active = (p: string) => (path === p ? 'nav-link-active' : 'nav-link')
 
   return (
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
+    <header class="sticky top-0 z-50 bg-[#faf7f0] border-b-2 border-agri-700">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <a href="/" class="flex items-center gap-2 shrink-0">
-            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-agri-500 to-tech-500 flex items-center justify-center text-white text-lg shadow-soft">🌿</span>
-            <span class="font-extrabold text-lg text-gray-900 leading-tight">Crop<span class="text-agri-600">Rakshak</span></span>
+          <a href="/" class="flex items-center gap-2.5 shrink-0">
+            <span class="w-9 h-9 rounded-md bg-agri-700 flex items-center justify-center text-tech-200 text-base border border-agri-800">🌾</span>
+            <span class="font-display font-bold text-lg text-agri-900 leading-tight">Crop<span class="text-eco-600">Rakshak</span></span>
           </a>
 
           <nav class="hidden lg:flex items-center gap-1 text-sm font-medium">
@@ -27,7 +27,7 @@ export const Header = ({ path }: { path: string }) => {
 
           <div class="flex items-center gap-2">
             <div class="relative hidden sm:block">
-              <select id="lang-select" class="appearance-none text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 pl-8 pr-7 py-2 rounded-full cursor-pointer border-0 focus:ring-2 focus:ring-agri-400">
+              <select id="lang-select" class="appearance-none text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 pl-8 pr-7 py-2 rounded-md cursor-pointer border-0 focus:ring-2 focus:ring-agri-400">
                 <option value="en">English</option>
                 <option value="hi">हिंदी (Hindi)</option>
                 <option value="mr">मराठी (Marathi)</option>
@@ -37,10 +37,10 @@ export const Header = ({ path }: { path: string }) => {
               <i class="fa-solid fa-globe absolute left-2.5 top-2.5 text-gray-400 text-xs pointer-events-none"></i>
               <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-gray-400 text-[10px] pointer-events-none"></i>
             </div>
-            <a href="/scan" class="hidden sm:inline-flex items-center gap-2 bg-agri-600 hover:bg-agri-700 text-white text-sm font-semibold px-4 py-2.5 rounded-full shadow-soft transition">
+            <a href="/scan" class="hidden sm:inline-flex items-center gap-2 bg-agri-700 hover:bg-agri-800 text-white text-sm font-bold px-4 py-2.5 rounded-md shadow-soft transition">
               <i class="fa-solid fa-camera"></i> Scan Your Crop
             </a>
-            <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100">
+            <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-md hover:bg-gray-100">
               <i class="fa-solid fa-bars text-gray-700"></i>
             </button>
           </div>

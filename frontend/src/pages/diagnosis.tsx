@@ -19,7 +19,7 @@ const CategoryCard = ({ a, accentIcon, accentColor }: { a: CategoryAssessment; a
         <span class={`absolute -top-3 left-4 status-chip bg-${accentColor}-600 text-white`}>MOST LIKELY</span>
       )}
       <div class="flex items-center gap-2.5 mb-3">
-        <div class={`w-10 h-10 rounded-xl bg-${accentColor}-100 text-${accentColor}-600 flex items-center justify-center text-lg shrink-0`}>
+        <div class={`w-10 h-10 rounded-md bg-${accentColor}-100 text-${accentColor}-600 flex items-center justify-center text-lg shrink-0`}>
           <i class={`fa-solid ${accentIcon}`}></i>
         </div>
         <div>
@@ -64,7 +64,7 @@ export const DiagnosisPage = ({ c }: { c: DiagnosisCase }) => {
           <div class="flex items-center gap-2 text-xs font-bold text-tech-600 uppercase tracking-wide">
             <i class="fa-solid fa-file-medical"></i> Diagnosis Result <span class="text-gray-300">·</span> {c.scanId}
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 flex items-center gap-2">
+          <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1 flex items-center gap-2">
             <span>{c.cropEmoji}</span> {c.cropName} — {c.variety}
           </h1>
           <p class="text-gray-500 text-sm mt-1">{c.stage} · {c.village}, {c.district} · Scanned {c.date}</p>
