@@ -1,58 +1,21 @@
-import { Hono } from 'hono'
-import { serveStatic } from 'hono/cloudflare-workers'
-import { renderer } from './renderer'
-import { HomePage } from './pages/home'
-import { ScanPage } from './pages/scan'
-import { AnalysisPage } from './pages/analysis'
-import { DiagnosisPage } from './pages/diagnosis'
-import { ActionPage } from './pages/action'
-import { DashboardPage } from './pages/dashboard'
-import { SeedPage } from './pages/seed'
-import { AdminPage } from './pages/admin'
-import { DealerPage } from './pages/dealer'
-import { CASES, getCase, buildCaseFromAssessment } from './lib/data'
-import { classifyCropImage, fileToDataUrl } from './lib/ai'
-
-type Bindings = {
-  AI?: Ai
-}
-
-const app = new Hono<{ Bindings: Bindings }>()
-
-app.use('/static/*', serveStatic({ root: './public' }))
-app.use(renderer)
-
-app.get('/', (c) => c.render(<HomePage />))
-
-app.get('/scan', (c) => c.render(<ScanPage />))
-
-app.get('/analysis/:caseId?', (c) => {
-  const caseId = c.req.param('caseId') || 'wheat-rust'
-  return c.render(<AnalysisPage caseId={caseId} />)
-})
-
-app.get('/diagnosis/:caseId', (c) => {
-  const caseId = c.req.param('caseId')
-  const found = getCase(caseId) || CASES['wheat-rust']
-  return c.render(<DiagnosisPage c={found} />)
-})
-
-app.get('/action/:caseId', (c) => {
-  const caseId = c.req.param('caseId')
-  const found = getCase(caseId) || CASES['wheat-rust']
-  return c.render(<ActionPage c={found} />)
-})
-
-// ---------------------------------------------------------------------------
+// ============================================================================
 // POST /api/scan — real image-classification inference for the /scan flow.
 //
 // Accepts a multipart form with the crop photo + optional context fields,
 // runs it through Cloudflare Workers AI (a real vision-language model — see
-// src/lib/ai.ts), builds a full DiagnosisCase from the result, and returns
-// its caseId so the client can redirect to the normal
+// backend/src/services/ai.ts), builds a full DiagnosisCase from the result,
+// and returns its caseId so the client can redirect to the normal
 // /analysis/:caseId -> /diagnosis/:caseId flow, unchanged from the demo path.
-// ---------------------------------------------------------------------------
-app.post('/api/scan', async (c) => {
+// ============================================================================
+
+import { Hono } from 'hono'
+import type { Bindings } from '../lib/types'
+import { buildCaseFromAssessment } from '../lib/data'
+import { classifyCropImage, fileToDataUrl } from '../services/ai'
+
+export const scanApiRoute = new Hono<{ Bindings: Bindings }>()
+
+scanApiRoute.post('/api/scan', async (c) => {
   try {
     const form = await c.req.formData()
     const photo = form.get('photo')
@@ -123,16 +86,3 @@ app.post('/api/scan', async (c) => {
     return c.json({ error: `Scan failed: ${err?.message || 'unknown error'}` }, 500)
   }
 })
-
-app.get('/dashboard', (c) => c.render(<DashboardPage />))
-
-app.get('/seed', (c) => {
-  const batch = c.req.query('batch')?.trim().toUpperCase()
-  return c.render(<SeedPage batchCode={batch} />)
-})
-
-app.get('/admin', (c) => c.render(<AdminPage />))
-
-app.get('/dealer', (c) => c.render(<DealerPage />))
-
-export default app

@@ -7,8 +7,9 @@
     "nodejs_compat"
   ],
   // Cloudflare Workers AI binding — powers real image-classification
-  // inference for the /scan flow (see src/lib/ai.ts). Available
-  // automatically once deployed to Cloudflare; requires no extra secrets.
+  // inference for the /scan flow (see backend/src/services/ai.ts).
+  // Available automatically once deployed to Cloudflare; requires no
+  // extra secrets.
   "ai": {
     "binding": "AI"
   }

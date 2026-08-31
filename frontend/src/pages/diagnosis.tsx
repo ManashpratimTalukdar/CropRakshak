@@ -1,4 +1,4 @@
-import type { DiagnosisCase, CategoryAssessment } from '../lib/data'
+import type { DiagnosisCase, CategoryAssessment } from '@backend/lib/data'
 
 const sevColor = (sev: string) => (sev === 'Severe' ? 'red' : sev === 'Moderate' ? 'amber' : 'agri')
 const riskChip = (risk: string) => {

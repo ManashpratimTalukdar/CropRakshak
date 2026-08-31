@@ -664,8 +664,9 @@ export function statusColor(status: string) {
 
 // ---------------------------------------------------------------------------
 // LIVE / RUNTIME SCAN CASES
-// Cases created from real /scan photo submissions (see src/lib/ai.ts +
-// POST /api/scan in src/index.tsx) are built into the same DiagnosisCase
+// Cases created from real /scan photo submissions (see
+// backend/src/services/ai.ts + POST /api/scan in
+// backend/src/routes/scan.ts) are built into the same DiagnosisCase
 // shape as the seeded demo cases above, then kept in this in-memory map so
 // /diagnosis/:caseId and /action/:caseId render them identically.
 //

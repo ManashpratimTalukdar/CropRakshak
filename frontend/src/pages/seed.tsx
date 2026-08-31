@@ -1,4 +1,4 @@
-import { SEED_BATCHES } from '../lib/data'
+import { SEED_BATCHES } from '@backend/lib/data'
 
 const authBadge = (a: string) => {
   switch (a) {

@@ -1,4 +1,4 @@
-import { PORTFOLIO, SCAN_HISTORY, riskColor } from '../lib/data'
+import { PORTFOLIO, SCAN_HISTORY, riskColor } from '@backend/lib/data'
 
 export const DashboardPage = () => {
   return (
