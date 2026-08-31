@@ -19,7 +19,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
         <div class="flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wide">
           <i class="fa-solid fa-clipboard-check"></i> Action &amp; Recommendation
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">What to do for your {c.cropName.toLowerCase()}</h1>
+        <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1">What to do for your {c.cropName.toLowerCase()}</h1>
         <p class="text-gray-500 mt-1 text-sm">Based on: <b class="text-gray-700">{primary.cause}</b> · Field size {c.fieldSizeAcres} acres · Budget: {c.budgetLevel}</p>
       </div>
 
@@ -27,7 +27,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
         {/* LEFT: Recommendations */}
         <div class="lg:col-span-2 space-y-6">
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-bolt text-red-500"></i> Immediate actions</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-bolt text-red-500"></i> Immediate actions</h2>
             <ul class="space-y-2.5">
               {c.recommendations.immediateActions.map((t) => (
                 <li class="flex gap-3 text-sm text-gray-700">
@@ -39,7 +39,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
           </div>
 
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-flask-vial text-tech-600"></i> Treatment guidance</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-flask-vial text-tech-600"></i> Treatment guidance</h2>
             <ul class="space-y-2.5">
               {c.recommendations.treatmentGuidance.map((t) => (
                 <li class="flex gap-3 text-sm text-gray-700">
@@ -51,7 +51,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
           </div>
 
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-seedling text-agri-600"></i> Cultural practices</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-3"><i class="fa-solid fa-seedling text-agri-600"></i> Cultural practices</h2>
             <ul class="space-y-2.5">
               {c.recommendations.culturalPractices.map((t) => (
                 <li class="flex gap-3 text-sm text-gray-700">
@@ -73,10 +73,10 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
 
           {/* Access & purchase */}
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-cart-shopping text-amber-600"></i> Access &amp; purchase options</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-cart-shopping text-amber-600"></i> Access &amp; purchase options</h2>
             <div class="grid sm:grid-cols-2 gap-3">
               {c.recommendations.purchaseOptions.map((p) => (
-                <div class="rounded-xl border border-gray-200 p-4 flex gap-3 hover:border-agri-300 transition">
+                <div class="rounded-md border border-gray-200 p-4 flex gap-3 hover:border-agri-300 transition">
                   <div class="w-10 h-10 rounded-lg bg-agri-100 text-agri-600 flex items-center justify-center shrink-0"><i class={`fa-solid ${p.icon}`}></i></div>
                   <div>
                     <p class="font-semibold text-sm text-gray-900">{p.label}</p>
@@ -89,7 +89,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
 
           {/* Follow-up plan */}
           <div class="card p-5 sm:p-6">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-calendar-check text-eco-600"></i> Follow-up plan</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-calendar-check text-eco-600"></i> Follow-up plan</h2>
             <div class="relative pl-6 space-y-5 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
               <div class="relative">
                 <span class="absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full bg-agri-500 ring-4 ring-agri-100"></span>
@@ -115,7 +115,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
         {/* RIGHT: Where to get help + ecosystem */}
         <div class="space-y-6">
           <div class="card p-5">
-            <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-location-dot text-tech-600"></i> Where to get help</h2>
+            <h2 class="font-display font-bold text-agri-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-location-dot text-tech-600"></i> Where to get help</h2>
             <div class="space-y-3" id="help">
               {DIRECTORY.slice(0, 4).map((p) => (
                 <div class="flex gap-3 items-start pb-3 border-b border-gray-100 last:border-0 last:pb-0">

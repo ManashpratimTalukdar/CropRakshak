@@ -8,15 +8,15 @@ export const DashboardPage = () => {
           <div class="flex items-center gap-2 text-xs font-bold text-eco-600 uppercase tracking-wide">
             <i class="fa-solid fa-chart-simple"></i> My Dashboard
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">Welcome back, Ramesh 👋</h1>
+          <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1">Welcome back, Ramesh 👋</h1>
           <p class="text-gray-500 mt-1 text-sm">Track your fields, re-scan crops, and see how your feedback improves the system.</p>
         </div>
         <a href="/scan" class="btn-primary inline-flex items-center gap-2"><i class="fa-solid fa-camera"></i> New Scan</a>
       </div>
 
       {/* Feedback loop visual */}
-      <div class="card p-5 sm:p-6 mb-8 bg-gradient-to-r from-eco-50 to-tech-50 border-eco-100">
-        <h2 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-arrows-spin text-eco-600"></i> How your feedback helps</h2>
+      <div class="card p-5 sm:p-6 mb-8 bg-eco-50 border-eco-200">
+        <h2 class="font-display font-bold text-agri-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-arrows-spin text-eco-600"></i> How your feedback helps</h2>
         <div class="flex items-center justify-between flex-wrap gap-3 text-center">
           {[
             { icon: 'fa-hand-holding-hand', label: 'You implement action', color: 'agri' },
@@ -37,7 +37,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Crop portfolio */}
-      <h2 class="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-layer-group text-agri-600"></i> Your crop portfolio</h2>
+      <h2 class="font-display font-bold text-lg text-agri-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-layer-group text-agri-600"></i> Your crop portfolio</h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {PORTFOLIO.map((f) => {
           const rc = riskColor(f.riskStatus)
@@ -57,7 +57,7 @@ export const DashboardPage = () => {
 
       {/* Scan history */}
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-tech-600"></i> Scan history</h2>
+        <h2 class="font-display font-bold text-lg text-agri-900 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-tech-600"></i> Scan history</h2>
       </div>
       <div class="card overflow-hidden">
         <div class="overflow-x-auto">

@@ -13,13 +13,13 @@ export const DealerPage = () => {
           <div class="flex items-center gap-2 text-xs font-bold text-amber-600 uppercase tracking-wide">
             <i class="fa-solid fa-store"></i> Input Dealer / Diagnostic Lab View
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">Referrals from the recommendation engine</h1>
+          <h1 class="text-2xl sm:text-3xl font-display font-bold text-agri-900 mt-1">Referrals from the recommendation engine</h1>
           <p class="text-gray-500 mt-1 text-sm">Farmers are automatically routed to verified partners like you when a treatment or test is recommended.</p>
         </div>
       </div>
 
       <div class="grid grid-cols-3 gap-4 mb-8">
-        <div class="card p-4 text-center"><p class="text-2xl font-extrabold text-blue-600">{stats.new}</p><p class="text-xs text-gray-500">New Referrals</p></div>
+        <div class="card p-4 text-center"><p class="text-2xl font-extrabold text-tech-700">{stats.new}</p><p class="text-xs text-gray-500">New Referrals</p></div>
         <div class="card p-4 text-center"><p class="text-2xl font-extrabold text-amber-600">{stats.contacted}</p><p class="text-xs text-gray-500">Contacted</p></div>
         <div class="card p-4 text-center"><p class="text-2xl font-extrabold text-agri-600">{stats.fulfilled}</p><p class="text-xs text-gray-500">Fulfilled</p></div>
       </div>
@@ -30,7 +30,7 @@ export const DealerPage = () => {
           const sc = statusColor(r.status)
           return (
             <div class="card p-5 flex flex-wrap items-center gap-4">
-              <div class="w-11 h-11 rounded-xl bg-agri-100 flex items-center justify-center text-xl shrink-0">{r.cropEmoji}</div>
+              <div class="w-11 h-11 rounded-md bg-agri-100 flex items-center justify-center text-xl shrink-0">{r.cropEmoji}</div>
               <div class="flex-1 min-w-[200px]">
                 <div class="flex items-center gap-2">
                   <p class="font-bold text-gray-900">{r.farmerName}</p>
