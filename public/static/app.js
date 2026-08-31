@@ -70,6 +70,12 @@ function initSliders() {
 }
 
 // ---------------------------------------------------------------------------
+// window.__SCAN_STATE__ tracks the user's uploaded photo (a real File, sent
+// to POST /api/scan for live AI inference) vs. the "use a sample photo"
+// shortcut (a remote demo image with no underlying File — that path keeps
+// using the pre-seeded demo cases since there's nothing real to analyze).
+window.__SCAN_STATE__ = { photoFile: null, usingSample: false }
+
 function initPhotoUpload() {
   const input = document.getElementById('photo-input')
   const preview = document.getElementById('photo-preview')
@@ -80,6 +86,8 @@ function initPhotoUpload() {
   input.addEventListener('change', () => {
     const file = input.files && input.files[0]
     if (!file) return
+    window.__SCAN_STATE__.photoFile = file
+    window.__SCAN_STATE__.usingSample = false
     const url = URL.createObjectURL(file)
     preview.src = url
     preview.classList.remove('hidden')
@@ -88,6 +96,8 @@ function initPhotoUpload() {
 
   if (sampleBtn) {
     sampleBtn.addEventListener('click', () => {
+      window.__SCAN_STATE__.photoFile = null
+      window.__SCAN_STATE__.usingSample = true
       preview.src = 'https://sspark.genspark.ai/cfimages?u1=%2BvvQcabkxEmQqgAjcs%2FxNa%2B9hW2FY0OKOkUWm35ePY1f2HYfJf7pa4rylZJS06%2FXBmgwgqChv81d8KgxHo7Age3tASObsW2E4leByGjX&u2=WPM48YMD1OSiX8Fc&width=800'
       preview.classList.remove('hidden')
       placeholder.classList.add('hidden')
@@ -107,16 +117,30 @@ function initScanFlow() {
   const btnNext = document.getElementById('btn-next')
   const btnSkip = document.getElementById('btn-skip')
   const btnAnalyze = document.getElementById('btn-analyze')
+  const btnAnalyzeLabel = document.getElementById('btn-analyze-label')
+  const errorBox = document.getElementById('scan-error')
+  const errorText = document.getElementById('scan-error-text')
   const total = panels.length
   let current = 0
 
-  // Selected crop -> determines which demo case we route to
+  // Selected crop -> used as a fallback demo case if live inference can't run
   const cropCaseMap = { wheat: 'wheat-rust', tomato: 'tomato-whitefly', rice: 'rice-nutrient' }
   let selectedCrop = 'wheat'
+  let selectedCropEmoji = '🌾'
   const cropSelect = document.getElementById('crop-select')
   if (cropSelect) {
     cropSelect.querySelectorAll('.chip-option').forEach((chip) => {
-      chip.addEventListener('click', () => { selectedCrop = chip.getAttribute('data-crop') })
+      chip.addEventListener('click', () => {
+        selectedCrop = chip.getAttribute('data-crop')
+        selectedCropEmoji = chip.getAttribute('data-emoji') || '🌿'
+      })
+    })
+  }
+  let selectedStage = 'Vegetative'
+  const stageSelect = document.getElementById('stage-select')
+  if (stageSelect) {
+    stageSelect.querySelectorAll('.chip-option').forEach((chip) => {
+      chip.addEventListener('click', () => { selectedStage = chip.getAttribute('data-stage') })
     })
   }
 
@@ -139,6 +163,23 @@ function initScanFlow() {
     window.scrollTo({ top: document.getElementById('progress-track').offsetTop - 90, behavior: 'smooth' })
   }
 
+  function showError(msg) {
+    if (!errorBox) return
+    errorText.textContent = msg
+    errorBox.classList.remove('hidden')
+  }
+  function hideError() {
+    if (!errorBox) return
+    errorBox.classList.add('hidden')
+  }
+
+  function setAnalyzing(isAnalyzing) {
+    btnAnalyze.disabled = isAnalyzing
+    btnAnalyze.classList.toggle('opacity-70', isAnalyzing)
+    btnAnalyze.classList.toggle('cursor-wait', isAnalyzing)
+    btnAnalyzeLabel.textContent = isAnalyzing ? 'Analyzing…' : 'Analyze My Crop'
+  }
+
   btnNext.addEventListener('click', () => {
     if (current < total - 1) { current++; render() }
   })
@@ -149,9 +190,66 @@ function initScanFlow() {
     current = total - 1
     render()
   })
-  btnAnalyze.addEventListener('click', () => {
-    const caseId = cropCaseMap[selectedCrop] || 'wheat-rust'
-    window.location.href = `/analysis/${caseId}`
+
+  btnAnalyze.addEventListener('click', async () => {
+    hideError()
+    const state = window.__SCAN_STATE__ || {}
+    const fallbackToDemo = () => {
+      const caseId = cropCaseMap[selectedCrop] || 'wheat-rust'
+      window.location.href = `/analysis/${caseId}`
+    }
+
+    // No real photo file (user picked "sample photo" or nothing at all) —
+    // there's nothing to send to the model, so keep the illustrative demo
+    // path (this is what the sample-photo shortcut is for).
+    if (!state.photoFile) {
+      if (!state.usingSample) {
+        showError('Please add a crop photo first — tap the photo box to take one or upload from your gallery (or use the sample photo for a demo).')
+        current = 0
+        render()
+        return
+      }
+      fallbackToDemo()
+      return
+    }
+
+    setAnalyzing(true)
+    try {
+      const fd = new FormData()
+      fd.append('photo', state.photoFile, state.photoFile.name || 'crop.jpg')
+      fd.append('cropName', selectedCrop.charAt(0).toUpperCase() + selectedCrop.slice(1))
+      fd.append('cropEmoji', selectedCropEmoji)
+      fd.append('stage', selectedStage)
+
+      const variety = document.getElementById('input-variety')
+      if (variety && variety.value) fd.append('variety', variety.value)
+      const fieldSize = document.getElementById('input-field-size')
+      if (fieldSize && fieldSize.value) fd.append('fieldSizeAcres', fieldSize.value)
+      const location = document.getElementById('input-location')
+      if (location && location.value) fd.append('village', location.value)
+
+      const notesParts = []
+      const recent = document.getElementById('input-recent-treatment')
+      if (recent && recent.value) notesParts.push(`Recent treatment: ${recent.value}`)
+      const past = document.getElementById('input-past-issues')
+      if (past && past.value) notesParts.push(`Past issues: ${past.value}`)
+      if (notesParts.length) fd.append('notes', notesParts.join('. '))
+
+      const res = await fetch('/api/scan', { method: 'POST', body: fd })
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data && data.error ? data.error : `Scan failed (HTTP ${res.status})`)
+      }
+
+      if (data.warning) {
+        showToast(`Note: ${data.warning}`)
+      }
+      window.location.href = `/analysis/${data.caseId}`
+    } catch (err) {
+      setAnalyzing(false)
+      showError(`We couldn't analyze that photo (${err.message}). You can try again, or use the sample photo for a demo.`)
+    }
   })
 
   render()

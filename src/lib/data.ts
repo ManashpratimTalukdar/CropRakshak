@@ -661,3 +661,245 @@ export function statusColor(status: string) {
       return { bg: 'bg-gray-100', text: 'text-gray-700' }
   }
 }
+
+// ---------------------------------------------------------------------------
+// LIVE / RUNTIME SCAN CASES
+// Cases created from real /scan photo submissions (see src/lib/ai.ts +
+// POST /api/scan in src/index.tsx) are built into the same DiagnosisCase
+// shape as the seeded demo cases above, then kept in this in-memory map so
+// /diagnosis/:caseId and /action/:caseId render them identically.
+//
+// NOTE: this is per-Worker-isolate memory, not persistent storage — a case
+// can disappear if the isolate recycles. That's an intentional, documented
+// limitation for this hackathon-scope build; see README "Recommended Next
+// Steps" for wiring this to Cloudflare D1 for durable, cross-request storage.
+// ---------------------------------------------------------------------------
+
+const RUNTIME_CASES = new Map<string, DiagnosisCase>()
+
+export function saveRuntimeCase(c: DiagnosisCase) {
+  RUNTIME_CASES.set(c.id, c)
+}
+
+/** Looks up a case by id across both the seeded demo cases and live scans. */
+export function getCase(caseId: string): DiagnosisCase | undefined {
+  return RUNTIME_CASES.get(caseId) || CASES[caseId]
+}
+
+const GENERIC_PURCHASE_OPTIONS = [
+  { label: 'Buy Locally', detail: 'Check with a verified dealer near you before purchasing any input', icon: 'fa-store' },
+  { label: 'Order Online', detail: 'Trusted agri-input partner — delivery in 2–3 days', icon: 'fa-truck-fast' },
+  { label: 'Call / SMS to Order', detail: 'SMS "HELP" to 56070 for a dealer callback', icon: 'fa-comment-sms' },
+  { label: 'Assisted Procurement', detail: 'Ask your nearest KVK about subsidised stock', icon: 'fa-handshake-angle' },
+]
+
+function recommendationsFor(primary: CategoryAssessment, uncertain: boolean): CaseRecommendations {
+  if (uncertain) {
+    return {
+      immediateActions: [
+        'Take 2–3 more close-up photos in good daylight (no shadows) and re-scan — this result is not confident enough to act on yet.',
+        'Avoid spraying or applying fertilizer until the diagnosis is confirmed — acting on a low-confidence guess can do more harm than good.',
+        'Check the surrounding plants — is the symptom spreading, isolated, or uniform across the field?',
+      ],
+      treatmentGuidance: [
+        'Hold off on any chemical or fertilizer treatment until confidence improves with a clearer photo or officer visit.',
+        'If symptoms worsen quickly (within 1–2 days), treat that as a signal to escalate immediately rather than wait.',
+      ],
+      culturalPractices: [
+        'Maintain good field hygiene and drainage while waiting for a clearer diagnosis.',
+        'Avoid introducing any new chemical inputs that could complicate a future diagnosis.',
+      ],
+      safeUsage: ['No treatment is recommended yet — safe-usage guidance will appear once the diagnosis is confirmed.'],
+      purchaseOptions: GENERIC_PURCHASE_OPTIONS,
+      followUp: {
+        rescanAfterDays: 2,
+        monitorNotes: ['Re-scan within 2 days with a clearer, closer photo of the affected area.', 'Track whether the symptom spreads or stays the same.'],
+        escalateWhen: 'Given the uncertainty, consider an Agriculture Officer visit within 2–3 days rather than waiting for further spread.',
+      },
+    }
+  }
+
+  const byType: Record<IssueType, Omit<CaseRecommendations, 'purchaseOptions'>> = {
+    disease: {
+      immediateActions: [
+        `Isolate and closely inspect nearby plants for signs of ${primary.cause.toLowerCase()} — many diseases spread fast in humid conditions.`,
+        'Remove and destroy heavily infected leaves or plant parts if less than 10% of the field is affected.',
+        'Avoid overhead irrigation for a few days to reduce leaf wetness, which favours most fungal/bacterial spread.',
+      ],
+      treatmentGuidance: [
+        'Consult a local Krishi Vigyan Kendra (KVK) or agri-input dealer for the correct fungicide/bactericide for this specific finding — dosage and product depend on crop stage and local regulations.',
+        'Spray during early morning or late evening; avoid spraying right before rain.',
+        'Do not exceed 2 sprays per season without officer advice, and always follow label instructions.',
+      ],
+      culturalPractices: [
+        'Maintain balanced nutrition — excess nitrogen can increase susceptibility to some diseases.',
+        'Ensure recommended plant spacing for good airflow.',
+        'Consider crop rotation next season to break the disease cycle.',
+      ],
+      safeUsage: [
+        'Wear gloves and a mask while spraying; wash hands and equipment after use.',
+        'Keep children and animals away from the field for 24 hours post-spray.',
+        'Store unused chemical in its original container, away from food and water sources.',
+      ],
+      followUp: {
+        rescanAfterDays: 5,
+        monitorNotes: ['Photograph the same plants each re-scan for consistent comparison.', 'Watch for the symptom spreading to new leaves or plants.'],
+        escalateWhen: 'If more than 25% of the field is affected, or spread continues after treatment — escalate to your Agriculture Officer.',
+      },
+    },
+    pest: {
+      immediateActions: [
+        `Check leaf undersides and stems across 5+ spots in the field for ${primary.cause.toLowerCase()}.`,
+        'Install yellow/blue sticky traps to monitor and reduce adult pest population where applicable.',
+        'Remove and destroy heavily infested leaves to reduce pest load.',
+      ],
+      treatmentGuidance: [
+        'Consult a local dealer or KVK for the right neem-based or chemical control for this specific pest — rotate chemical groups every 2 sprays to avoid resistance build-up.',
+        'Avoid spraying during peak sun hours (11 AM–3 PM); early morning or evening is best.',
+        'Prefer targeted, threshold-based spraying over blanket application.',
+      ],
+      culturalPractices: [
+        'Avoid planting the same crop next to an already-infested plot this season.',
+        'Maintain field hygiene — remove weeds that can host the pest.',
+        'Encourage natural predators where possible instead of broad-spectrum sprays.',
+      ],
+      safeUsage: [
+        'Wear gloves and eye protection while spraying.',
+        'Re-entry into a sprayed field only after 4–6 hours.',
+        'Do not mix chemical and neem-based sprays together unless the label permits.',
+      ],
+      followUp: {
+        rescanAfterDays: 4,
+        monitorNotes: ['Count pests on traps every 2 days to track the population trend.', 'Watch new growth closely for continued or new damage.'],
+        escalateWhen: 'If infestation spreads to more than 15% of plants despite treatment — escalate for expert guidance.',
+      },
+    },
+    abiotic: {
+      immediateActions: [
+        `Check field drainage and irrigation — ${primary.cause.toLowerCase()} is often linked to water or nutrient balance.`,
+        'Avoid any spraying until the cause is confirmed — treating the wrong issue can waste money and worsen the real problem.',
+        'Compare affected vs. unaffected patches in the field for clues (e.g., low-lying vs. raised areas).',
+      ],
+      treatmentGuidance: [
+        'If nutrient deficiency is confirmed, apply the relevant nutrient in split doses as per your state package of practice.',
+        'If water stress is confirmed, adjust irrigation frequency accordingly rather than adding fertilizer.',
+        'A soil test is the most reliable way to confirm before spending on inputs.',
+      ],
+      culturalPractices: [
+        'Improve field drainage to avoid prolonged waterlogging.',
+        'Avoid excess or uneven irrigation — consistency matters more than volume.',
+        'Keep field bunds/edges clean and well-maintained.',
+      ],
+      safeUsage: [
+        'If applying fertilizer, do so in dry field conditions, not standing water, to reduce nutrient loss.',
+        'Store fertilizer bags off the ground and away from moisture.',
+      ],
+      followUp: {
+        rescanAfterDays: 3,
+        monitorNotes: ['Re-scan after any correction (irrigation/fertilizer change) to confirm improvement.', 'Track whether the pattern spreads to younger leaves (would suggest a different cause).'],
+        escalateWhen: 'If there is no improvement after correction within a week, escalate to your Agriculture Officer or request a soil test.',
+      },
+    },
+  }
+
+  return { ...byType[primary.type], purchaseOptions: GENERIC_PURCHASE_OPTIONS }
+}
+
+export interface BuildCaseInput {
+  id: string
+  scanId: string
+  cropName: string
+  cropEmoji: string
+  variety?: string
+  stage?: string
+  farmerName?: string
+  village?: string
+  district?: string
+  date: string
+  fieldSizeAcres?: number
+  budgetLevel?: 'Low' | 'Medium' | 'High'
+  primaryType: IssueType
+  overallConfidence: number
+  disease: Omit<CategoryAssessment, 'type' | 'icon' | 'label'>
+  pest: Omit<CategoryAssessment, 'type' | 'icon' | 'label'>
+  abiotic: Omit<CategoryAssessment, 'type' | 'icon' | 'label'>
+  weather?: Partial<WeatherSnapshot>
+  regional?: Partial<RegionalSnapshot>
+}
+
+const DEFAULT_WEATHER: WeatherSnapshot = {
+  temp: 'Not available for this scan',
+  humidity: 'Not available',
+  rainfall: 'Not available',
+  forecast: 'Live weather integration not yet connected — see README',
+  soilMoisture: 'Not available',
+  windSpeed: 'Not available',
+}
+
+const DEFAULT_REGIONAL: RegionalSnapshot = {
+  hotspotStatus: 'Low Activity',
+  nearbyReports: 0,
+  radiusKm: 8,
+  dominantIssue: 'No regional signal available for this scan yet',
+  advisory: 'Regional outbreak data is not yet connected for live scans — see README "Recommended Next Steps".',
+}
+
+/**
+ * Builds a full DiagnosisCase from a real AI classification result so it can
+ * be rendered by the exact same /diagnosis and /action pages as the seeded
+ * demo cases, then registers it in the runtime case store.
+ */
+export function buildCaseFromAssessment(input: BuildCaseInput): DiagnosisCase {
+  const mk = (type: IssueType, icon: string, label: string, a: BuildCaseInput['disease']): CategoryAssessment => ({
+    type,
+    icon,
+    label,
+    cause: a.cause,
+    scientificName: a.scientificName,
+    confidence: a.confidence,
+    severity: a.severity,
+    riskLevel: a.riskLevel,
+    alternatives: a.alternatives,
+    isPrimary: type === input.primaryType,
+  })
+
+  const disease = mk('disease', 'fa-leaf', 'Disease Detection', input.disease)
+  const pest = mk('pest', 'fa-bug', 'Pest Detection', input.pest)
+  const abiotic = mk('abiotic', 'fa-droplet', 'Abiotic / Other Stress', input.abiotic)
+  const primary = input.primaryType === 'disease' ? disease : input.primaryType === 'pest' ? pest : abiotic
+
+  const uncertain = input.overallConfidence < 55
+  const uncertaintyMessage = uncertain
+    ? `Confidence is below our reliable threshold (${input.overallConfidence}%). ${primary.cause} is our best estimate, but the photo may be too unclear, distant, or ambiguous to be sure. We need a clearer, closer photo — ideally in daylight, without shadows — before we can raise confidence.`
+    : undefined
+
+  const c: DiagnosisCase = {
+    id: input.id,
+    scanId: input.scanId,
+    cropName: input.cropName,
+    cropEmoji: input.cropEmoji,
+    variety: input.variety || 'Not specified',
+    stage: input.stage || 'Not specified',
+    farmerName: input.farmerName || 'You',
+    village: input.village || 'Not specified',
+    district: input.district || 'Not specified',
+    date: input.date,
+    fieldSizeAcres: input.fieldSizeAcres ?? 1,
+    budgetLevel: input.budgetLevel || 'Medium',
+    primaryType: input.primaryType,
+    overallConfidence: input.overallConfidence,
+    uncertain,
+    uncertaintyMessage,
+    disease,
+    pest,
+    abiotic,
+    weather: { ...DEFAULT_WEATHER, ...input.weather },
+    regional: { ...DEFAULT_REGIONAL, ...input.regional },
+    helpProviders: [],
+    recommendations: recommendationsFor(primary, uncertain),
+    status: 'Pending Review',
+  }
+
+  saveRuntimeCase(c)
+  return c
+}

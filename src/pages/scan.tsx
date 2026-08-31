@@ -59,16 +59,16 @@ export const ScanPage = () => {
             <div>
               <label class="field-label">Which crop?</label>
               <div class="grid grid-cols-3 gap-2" id="crop-select">
-                <div class="chip-option selected" data-crop="wheat">🌾 Wheat</div>
-                <div class="chip-option" data-crop="tomato">🍅 Tomato</div>
-                <div class="chip-option" data-crop="rice">🌱 Rice</div>
+                <div class="chip-option selected" data-crop="wheat" data-emoji="🌾">🌾 Wheat</div>
+                <div class="chip-option" data-crop="tomato" data-emoji="🍅">🍅 Tomato</div>
+                <div class="chip-option" data-crop="rice" data-emoji="🌱">🌱 Rice</div>
               </div>
             </div>
 
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="field-label">Variety (optional)</label>
-                <input type="text" placeholder="e.g., HD-2967" class="field-input" />
+                <input id="input-variety" type="text" placeholder="e.g., HD-2967" class="field-input" />
               </div>
               <div>
                 <label class="field-label">Sowing date</label>
@@ -78,9 +78,9 @@ export const ScanPage = () => {
 
             <div>
               <label class="field-label">Crop growth stage</label>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="stage-select">
                 {['Seedling', 'Vegetative', 'Flowering', 'Maturity'].map((s, i) => (
-                  <div class={`chip-option ${i === 1 ? 'selected' : ''}`}>{s}</div>
+                  <div class={`chip-option ${i === 1 ? 'selected' : ''}`} data-stage={s}>{s}</div>
                 ))}
               </div>
             </div>
@@ -88,12 +88,12 @@ export const ScanPage = () => {
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="field-label">Field size (acres)</label>
-                <input type="number" placeholder="e.g., 2.5" step="0.1" class="field-input" value="2.5" />
+                <input id="input-field-size" type="number" placeholder="e.g., 2.5" step="0.1" class="field-input" value="2.5" />
               </div>
               <div>
                 <label class="field-label">Field location</label>
                 <div class="relative">
-                  <input type="text" placeholder="Village, District" class="field-input pl-9" value="Sonewadi, Nashik" />
+                  <input id="input-location" type="text" placeholder="Village, District" class="field-input pl-9" value="Sonewadi, Nashik" />
                   <i class="fa-solid fa-location-dot absolute left-3 top-3.5 text-gray-400"></i>
                 </div>
               </div>
@@ -199,11 +199,11 @@ export const ScanPage = () => {
 
             <div>
               <label class="field-label">Pesticides/fertilizers used recently</label>
-              <input type="text" placeholder="e.g., Urea top-dress 2 weeks ago" class="field-input" />
+              <input id="input-recent-treatment" type="text" placeholder="e.g., Urea top-dress 2 weeks ago" class="field-input" />
             </div>
             <div>
               <label class="field-label">Past diseases or pests on this field</label>
-              <input type="text" placeholder="e.g., Aphids last season" class="field-input" />
+              <input id="input-past-issues" type="text" placeholder="e.g., Aphids last season" class="field-input" />
             </div>
             <div>
               <label class="field-label">Previous season's yield (optional)</label>
@@ -256,12 +256,19 @@ export const ScanPage = () => {
         </section>
 
         {/* ============ NAV BUTTONS ============ */}
+        <div id="scan-error" class="hidden card p-4 border-2 border-red-200 bg-red-50 text-sm text-red-700 flex gap-2.5">
+          <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+          <span id="scan-error-text"></span>
+        </div>
         <div class="flex items-center justify-between gap-3 pt-2">
           <button type="button" id="btn-back" class="btn-ghost bg-gray-100 hidden"><i class="fa-solid fa-arrow-left mr-1.5"></i>Back</button>
           <div class="flex-1"></div>
           <button type="button" id="btn-skip" class="btn-ghost text-sm text-gray-500 underline">Skip optional details</button>
           <button type="button" id="btn-next" class="btn-primary"><i class="fa-solid fa-arrow-right mr-1.5"></i>Next</button>
-          <button type="button" id="btn-analyze" class="btn-primary hidden bg-tech-600 hover:bg-tech-700"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Analyze My Crop</button>
+          <button type="button" id="btn-analyze" class="btn-primary hidden bg-tech-600 hover:bg-tech-700">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>
+            <span id="btn-analyze-label">Analyze My Crop</span>
+          </button>
         </div>
       </form>
     </main>
