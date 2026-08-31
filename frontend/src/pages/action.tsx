@@ -1,5 +1,5 @@
-import type { DiagnosisCase } from '../lib/data'
-import { DIRECTORY } from '../lib/data'
+import type { DiagnosisCase } from '@backend/lib/data'
+import { DIRECTORY } from '@backend/lib/data'
 
 const providerIcon = (type: string) => {
   switch (type) {

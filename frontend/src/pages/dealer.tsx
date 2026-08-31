@@ -1,4 +1,4 @@
-import { REFERRALS, riskColor, statusColor } from '../lib/data'
+import { REFERRALS, riskColor, statusColor } from '@backend/lib/data'
 
 export const DealerPage = () => {
   const stats = {

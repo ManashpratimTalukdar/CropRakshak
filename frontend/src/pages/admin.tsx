@@ -1,4 +1,4 @@
-import { HOTSPOTS, FARMER_DIRECTORY, ANALYTICS, riskColor, statusColor } from '../lib/data'
+import { HOTSPOTS, FARMER_DIRECTORY, ANALYTICS, riskColor, statusColor } from '@backend/lib/data'
 
 export const AdminPage = () => {
   const escalated = FARMER_DIRECTORY.filter((f) => f.status === 'Escalated')

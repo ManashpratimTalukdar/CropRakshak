@@ -6,7 +6,7 @@
 // Model: @cf/meta/llama-3.2-11b-vision-instruct (Meta, multimodal, runs on
 // Cloudflare's edge GPUs). We ask it for a strict JSON object describing a
 // disease / pest / abiotic three-way split, mirroring this app's data model
-// (see src/lib/data.ts — CategoryAssessment / DiagnosisCase), so the rest of
+// (see backend/src/lib/data.ts — CategoryAssessment / DiagnosisCase), so the rest of
 // the site (diagnosis, action, dashboard, admin) needs no changes to render
 // a real result the exact same way it renders the seeded demo cases.
 //
@@ -17,7 +17,7 @@
 // calls the live model with no extra configuration or secrets required.
 // ============================================================================
 
-import type { IssueType, Severity, RiskLevel } from './data'
+import type { IssueType, Severity, RiskLevel } from '../lib/data'
 
 export interface AiAssessmentRaw {
   type: IssueType
