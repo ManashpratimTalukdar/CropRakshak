@@ -12,7 +12,21 @@
   // extra secrets.
   "ai": {
     "binding": "AI"
-  }
+  },
+  // Cloudflare D1 — primary relational store for Crop Rakshak (users, crops,
+  // diagnoses, risk assessments, recommendations, follow-ups, feedback,
+  // expert reviews, alerts, seed verification, regional reports, dealers).
+  // See database/migrations/ for schema and docs/database.md for details.
+  // database_id below is a placeholder for local development; the deploy
+  // flow replaces it with the real UUID returned by `wrangler d1 create`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "webapp-production",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "database/migrations"
+    }
+  ]
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
@@ -26,13 +40,6 @@
   //   {
   //     "binding": "MY_BUCKET",
   //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
   //   }
   // ]
 }

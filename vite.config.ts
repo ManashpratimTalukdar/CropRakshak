@@ -19,6 +19,7 @@ export default defineConfig({
     alias: {
       '@frontend': resolve(rootDir, 'frontend/src'),
       '@backend': resolve(rootDir, 'backend/src'),
+      '@ai': resolve(rootDir, 'ai'),
     },
   },
   plugins: [

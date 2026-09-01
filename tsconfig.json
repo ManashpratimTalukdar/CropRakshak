@@ -14,8 +14,9 @@
     "baseUrl": ".",
     "paths": {
       "@frontend/*": ["frontend/src/*"],
-      "@backend/*": ["backend/src/*"]
+      "@backend/*": ["backend/src/*"],
+      "@ai/*": ["ai/*"]
     }
   },
-  "include": ["frontend/src", "backend/src"]
+  "include": ["frontend/src", "backend/src", "ai"]
 }
