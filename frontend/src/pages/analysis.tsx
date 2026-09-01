@@ -1,5 +1,5 @@
 export const AnalysisPage = ({ caseId }: { caseId: string }) => {
-  const isLiveScan = caseId.startsWith('live-')
+  const isLiveScan = caseId.startsWith('diag_')
   return (
     <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div class="text-center mb-8">

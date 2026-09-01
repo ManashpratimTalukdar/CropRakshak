@@ -20,6 +20,7 @@ export interface DiagnosisRow {
   district: string | null
   latitude: number | null
   longitude: number | null
+  field_size_acres: number | null
   image_url: string | null
   primary_type: IssueType
   primary_cause: string
@@ -49,6 +50,7 @@ export interface CreateDiagnosisInput {
   district?: string
   latitude?: number
   longitude?: number
+  fieldSizeAcres?: number
   imageUrl?: string
   diagnosis: FusedDiagnosis
   aiSource: 'mock' | 'workers-ai' | 'heuristic-fallback'
@@ -69,11 +71,11 @@ export class DiagnosesRepo {
       .prepare(
         `INSERT INTO diagnoses (
           id, scan_code, user_id, crop_id, crop_name, crop_emoji, variety, crop_stage,
-          village, district, latitude, longitude, image_url,
+          village, district, latitude, longitude, field_size_acres, image_url,
           primary_type, primary_cause, primary_scientific, overall_confidence,
           uncertain, uncertainty_message, disease_json, pest_json, abiotic_json,
           ai_source, ai_model_used, status, is_demo, created_at, updated_at
-        ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?27)`
+        ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?28,?28)`
       )
       .bind(
         id,
@@ -88,6 +90,7 @@ export class DiagnosesRepo {
         input.district ?? null,
         input.latitude ?? null,
         input.longitude ?? null,
+        input.fieldSizeAcres ?? null,
         input.imageUrl ?? null,
         d.primaryType,
         d.primaryCause,

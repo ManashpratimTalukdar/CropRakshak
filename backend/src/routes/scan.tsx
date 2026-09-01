@@ -1,21 +1,24 @@
 // ============================================================================
-// POST /api/scan — real image-classification inference for the /scan flow.
+// POST /api/scan — the P1 core scan endpoint.
 //
-// Accepts a multipart form with the crop photo + optional context fields,
-// runs it through Cloudflare Workers AI (a real vision-language model — see
-// backend/src/services/ai.ts), builds a full DiagnosisCase from the result,
-// and returns its caseId so the client can redirect to the normal
-// /analysis/:caseId -> /diagnosis/:caseId flow, unchanged from the demo path.
+// Accepts a multipart form with the crop photo + crop/field/soil/irrigation/
+// treatment-history context (matching the 6-step /scan wizard), runs the full
+// Evidence Fusion + Risk Engine + Recommendation Engine pipeline
+// (backend/src/services/diagnosis-pipeline.ts), persists every stage to D1,
+// and returns the new diagnosis id so the client redirects to the unchanged
+// /analysis/:caseId -> /diagnosis/:caseId flow.
 // ============================================================================
 
 import { Hono } from 'hono'
 import type { Bindings } from '../lib/types'
-import { buildCaseFromAssessment } from '../lib/data'
-import { classifyCropImage, fileToDataUrl } from '../services/ai'
+import { fileToDataUrl } from '@ai/index'
+import { runDiagnosisPipeline } from '../services/diagnosis-pipeline'
+import { attachUser } from '../middleware/auth'
+import type { AppVariables } from '../lib/types'
 
-export const scanApiRoute = new Hono<{ Bindings: Bindings }>()
+export const scanApiRoute = new Hono<{ Bindings: Bindings; Variables: AppVariables }>()
 
-scanApiRoute.post('/api/scan', async (c) => {
+scanApiRoute.post('/api/scan', attachUser, async (c) => {
   try {
     const form = await c.req.formData()
     const photo = form.get('photo')
@@ -24,13 +27,22 @@ scanApiRoute.post('/api/scan', async (c) => {
     const variety = form.get('variety') ? String(form.get('variety')) : undefined
     const stage = form.get('stage') ? String(form.get('stage')) : undefined
     const fieldSizeAcres = form.get('fieldSizeAcres') ? Number(form.get('fieldSizeAcres')) : undefined
-    const village = form.get('village') ? String(form.get('village')) : undefined
+    const locationRaw = form.get('village') ? String(form.get('village')) : undefined
     const notes = form.get('notes') ? String(form.get('notes')) : ''
+
+    // The scan form's "Field location" field is free text ("Village, District") —
+    // split it best-effort so district-scoped regional/hotspot lookups still work.
+    let village: string | undefined
+    let district: string | undefined
+    if (locationRaw) {
+      const parts = locationRaw.split(',').map((p) => p.trim()).filter(Boolean)
+      village = parts[0]
+      district = parts[1] || parts[0]
+    }
 
     if (!photo || !(photo instanceof Blob) || photo.size === 0) {
       return c.json({ error: 'A crop photo is required for analysis.' }, 400)
     }
-    // Basic guardrails: reject absurdly large uploads and non-image types.
     const MAX_BYTES = 8 * 1024 * 1024
     if (photo.size > MAX_BYTES) {
       return c.json({ error: 'Photo is too large (max 8 MB). Please use a smaller image.' }, 400)
@@ -40,47 +52,33 @@ scanApiRoute.post('/api/scan', async (c) => {
       return c.json({ error: 'Uploaded file must be an image.' }, 400)
     }
 
-    const dataUrl = await fileToDataUrl(photo, mime)
+    const imageDataUrl = await fileToDataUrl(photo, mime)
     const contextNote = notes ? `Farmer-provided notes: ${notes}` : 'No additional notes provided.'
+    const user = c.get('user')
 
-    const result = await classifyCropImage(c.env.AI, dataUrl, cropName, contextNote)
-
-    const now = new Date()
-    const caseId = `live-${now.getTime().toString(36)}`
-    const scanId = `SCN-${now.getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`
-
-    const toAssessment = (a: typeof result.disease) => ({
-      cause: a.cause,
-      scientificName: a.scientific_name,
-      confidence: a.confidence,
-      severity: a.severity,
-      riskLevel: a.risk_level,
-      alternatives: a.alternatives,
-    })
-
-    const diagnosisCase = buildCaseFromAssessment({
-      id: caseId,
-      scanId,
+    const { diagnosis, fused, risk } = await runDiagnosisPipeline(c.env, {
+      userId: user?.sub,
       cropName,
       cropEmoji,
       variety,
-      stage,
-      village,
-      date: now.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
+      cropStage: stage,
       fieldSizeAcres,
-      primaryType: result.primary_type,
-      overallConfidence: result.overall_confidence,
-      disease: toAssessment(result.disease),
-      pest: toAssessment(result.pest),
-      abiotic: toAssessment(result.abiotic),
+      village,
+      district,
+      imageDataUrl,
+      contextNote,
+      treatmentHistory: notes ? { pastIssues: notes } : undefined,
+      isDemo: c.env.DEMO_MODE !== 'false',
     })
 
     return c.json({
-      caseId: diagnosisCase.id,
-      summary: result.summary,
-      source: result.source,
-      modelUsed: result.modelUsed,
-      warning: result.source === 'heuristic-fallback' ? result.error : undefined,
+      caseId: diagnosis.id,
+      summary: fused.uncertain
+        ? fused.uncertaintyMessage
+        : `${fused.primaryCause} (${fused.overallConfidence}% confidence, ${risk.riskLevel} risk).`,
+      source: diagnosis.ai_source,
+      modelUsed: diagnosis.ai_model_used,
+      warning: diagnosis.ai_source === 'heuristic-fallback' ? 'Live AI model was unavailable — showed a conservative fallback instead.' : undefined,
     })
   } catch (err: any) {
     return c.json({ error: `Scan failed: ${err?.message || 'unknown error'}` }, 500)

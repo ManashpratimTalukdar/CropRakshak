@@ -1,4 +1,4 @@
-import type { DiagnosisCase, CategoryAssessment } from '@backend/lib/data'
+import type { ViewDiagnosisCase, ViewCategoryAssessment } from '@backend/lib/view-types'
 
 const sevColor = (sev: string) => (sev === 'Severe' ? 'red' : sev === 'Moderate' ? 'amber' : 'agri')
 const riskChip = (risk: string) => {
@@ -10,7 +10,7 @@ const riskChip = (risk: string) => {
   }
 }
 
-const CategoryCard = ({ a, accentIcon, accentColor }: { a: CategoryAssessment; accentIcon: string; accentColor: string }) => {
+const CategoryCard = ({ a, accentIcon, accentColor }: { a: ViewCategoryAssessment; accentIcon: string; accentColor: string }) => {
   const risk = riskChip(a.riskLevel)
   const fillColor = a.confidence >= 70 ? accentColor : a.confidence >= 40 ? 'amber' : 'gray'
   return (
@@ -52,7 +52,7 @@ const CategoryCard = ({ a, accentIcon, accentColor }: { a: CategoryAssessment; a
   )
 }
 
-export const DiagnosisPage = ({ c }: { c: DiagnosisCase }) => {
+export const DiagnosisPage = ({ c }: { c: ViewDiagnosisCase }) => {
   const primary = c.primaryType === 'disease' ? c.disease : c.primaryType === 'pest' ? c.pest : c.abiotic
   const risk = riskChip(primary.riskLevel)
 

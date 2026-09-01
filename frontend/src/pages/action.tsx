@@ -1,5 +1,4 @@
-import type { DiagnosisCase } from '@backend/lib/data'
-import { DIRECTORY } from '@backend/lib/data'
+import type { ViewDiagnosisCase } from '@backend/lib/view-types'
 
 const providerIcon = (type: string) => {
   switch (type) {
@@ -11,7 +10,7 @@ const providerIcon = (type: string) => {
   }
 }
 
-export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
+export const ActionPage = ({ c }: { c: ViewDiagnosisCase }) => {
   const primary = c.primaryType === 'disease' ? c.disease : c.primaryType === 'pest' ? c.pest : c.abiotic
   return (
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -117,7 +116,7 @@ export const ActionPage = ({ c }: { c: DiagnosisCase }) => {
           <div class="card p-5">
             <h2 class="font-bold text-gray-900 flex items-center gap-2 mb-4"><i class="fa-solid fa-location-dot text-tech-600"></i> Where to get help</h2>
             <div class="space-y-3" id="help">
-              {DIRECTORY.slice(0, 4).map((p) => (
+              {c.helpProviders.slice(0, 4).map((p) => (
                 <div class="flex gap-3 items-start pb-3 border-b border-gray-100 last:border-0 last:pb-0">
                   <div class="w-9 h-9 rounded-lg bg-tech-100 text-tech-600 flex items-center justify-center shrink-0 text-sm"><i class={`fa-solid ${providerIcon(p.type)}`}></i></div>
                   <div class="flex-1 min-w-0">
